@@ -1,0 +1,27 @@
+ServerName <%= @params[:server_name] %>
+
+<VirtualHost *:80>
+  DocumentRoot <%= @params[:docroot] %>
+  ServerName <%= @params[:server_name] %>
+
+  RewriteEngine On
+
+  <Directory <%= @params[:docroot] %>>
+    Options FollowSymLinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  <Location />
+    Require all granted
+<% if node.chef_environment == 'virtualbox' then %>
+    # Local
+    Require ip 192.168.33.1
+<% end %>
+  </Location>
+
+  LogLevel info
+  ErrorLog <%= @node[:apache][:log_dir] %>/<%= @params[:name] %>-error.log
+  CustomLog <%= @node[:apache][:log_dir] %>/<%= @params[:name] %>-access.log combined
+</VirtualHost>
