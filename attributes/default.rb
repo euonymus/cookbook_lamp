@@ -1,7 +1,5 @@
 default[:lamp][:app_name]     = 'lampapp'
 
-default[:lamp][:server_name]  = default[:lamp][node.chef_environment]
-
 default[:lamp][:www_root]     = "/var/www"
 default[:lamp][:cache_root]   = "/var/cache"
 default[:lamp][:log_root]     = "/var/log"
@@ -17,11 +15,11 @@ default[:lamp][:secretpath] = "/vagrant/src/secrets/data_bag_key"
 # look for secret in file pointed to with lamp attribute :secretpath
 data_bag_secret = Chef::EncryptedDataBagItem.load_secret("#{node[:lamp][:secretpath]}")
 
-# # Set domains from data_bag
-# domain_creds = Chef::EncryptedDataBagItem.load("envs", "domain", data_bag_secret)
-# if data_bag_secret && domain_envs = domain_creds[node.chef_environment]
-#   default[:lamp][:domain] = domain_envs['domain']
-# end
+# Set domains from data_bag
+domain_creds = Chef::EncryptedDataBagItem.load("envs", "domain", data_bag_secret)
+if data_bag_secret && domain_envs = domain_creds[node.chef_environment]
+  default[:lamp][:domain] = domain_envs['domain']
+end
 
 # Set MySQL info from data_bag
 mysqlinfo_creds = Chef::EncryptedDataBagItem.load("envs", "mysql", data_bag_secret)

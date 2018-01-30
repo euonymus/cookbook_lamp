@@ -23,7 +23,7 @@ end
 directory(node[:lamp][:www_root])
 # put apache config
 web_app(node[:lamp][:app_name]) do
-  server_name(node[:lamp][:server_name])
+  server_name(node[:lamp][:domain])
   docroot(node[:lamp][:app_root])
   template('vhost.conf.erb')
 end
