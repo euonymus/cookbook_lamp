@@ -7,8 +7,8 @@
 # All rights reserved - Do Not Redistribute
 #
 
-include_recipe 'belongsto::server'
-include_recipe 'belongsto::apache'
-include_recipe 'belongsto::mysql'
-include_recipe 'belongsto::php'
-include_recipe 'belongsto::certbot'
+include_recipe 'lamp::server'
+include_recipe 'lamp::apache'
+include_recipe 'lamp::mysql'
+include_recipe 'lamp::php'
+include_recipe 'lamp::certbot'
