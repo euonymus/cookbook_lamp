@@ -33,3 +33,18 @@ if node.chef_environment != 'virtualbox'
     to node[:lamp][:app_source]
   end
 end
+
+# disable apache event mpm mode
+execute "disable_mpm_event" do
+  command "a2dismod mpm_event"
+end
+
+# enable apache prefork mpm mode
+execute "enable_mpm_prefork" do
+  command "a2enmod mpm_prefork"
+end
+
+# apache restart
+execute "apache_restart" do
+  command "apachectl graceful"
+end
