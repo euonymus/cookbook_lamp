@@ -1,8 +1,6 @@
 default[:lamp][:app_name]     = 'lampapp'
 
 default[:lamp][:www_root]     = "/var/www"
-default[:lamp][:cache_root]   = "/var/cache"
-default[:lamp][:log_root]     = "/var/log"
 default[:lamp][:app_root]     = "#{node[:lamp][:www_root]}/#{node[:lamp][:app_name]}"
 
 default[:lamp][:app_source]  = "/vagrant/src/#{node[:lamp][:app_name]}"
