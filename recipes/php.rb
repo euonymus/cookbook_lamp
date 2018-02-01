@@ -19,14 +19,14 @@ end
 # file "#{node['apache']['dir']}/mods-available/php7.1.load" do
 #   content '# conf is under mods-available/php7.load - apache2 cookbook\n'
 # end
-apache_conf 'php7' do
-  cookbook 'apache2'
-  source 'default/mods/php.conf.erb'
-end
-apache_module 'php7' do
-  conf false
-  filename 'libphp7.1.so'
-end
+# apache_conf 'php7' do
+#   cookbook 'apache2'
+#   source 'default/mods/php.conf.erb'
+# end
+# apache_module 'php7' do
+#   conf false
+#   filename 'libphp7.1.so'
+# end
 
 # apache restart
 execute "apache_restart" do
