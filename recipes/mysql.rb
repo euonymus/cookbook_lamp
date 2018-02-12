@@ -8,7 +8,7 @@ end
 mysql_service node[:lamp][:app_name] do
   port '3306'
   version '5.7'
-  charset 'utf8'
+  charset 'utf8mb4'
   initial_root_password node[:lamp][:db_password_root]
   action [:create, :start]
 end
