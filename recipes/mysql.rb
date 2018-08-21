@@ -2,6 +2,7 @@
 # MySQL auto restart setting
 execute "set auto restart" do
   command "sudo sysv-rc-conf mysql-" + node[:lamp][:app_name] + " on"
+  # command "sudo systemctl enable mysql-" + node[:lamp][:app_name] + ".service"
 end
 
 # Create mysql service
