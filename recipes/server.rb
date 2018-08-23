@@ -7,8 +7,12 @@ end
 link '/etc/localtime' do
   to '/usr/share/zoneinfo/Asia/Tokyo'
 end
-# In order to config daemon auto start
-package "sysv-rc-conf"
+
+# SysVinit is deprecated
+# See: https://eng-entrance.com/linux_startup
+# # In order to config daemon auto start
+# package "sysv-rc-conf"
+
 # restart cron. Somearticle said, "service crond restart", but crond has not been installed here, and below just works.
 execute "Restart cron" do
   command 'service cron restart'

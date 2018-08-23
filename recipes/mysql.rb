@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-# MySQL auto restart setting
-execute "set auto restart" do
-  command "sudo sysv-rc-conf mysql-" + node[:lamp][:app_name] + " on"
-  # command "sudo systemctl enable mysql-" + node[:lamp][:app_name] + ".service"
-end
-
 # Create mysql service
 mysql_service node[:lamp][:app_name] do
   port '3306'
@@ -13,6 +7,14 @@ mysql_service node[:lamp][:app_name] do
   initial_root_password node[:lamp][:db_password_root]
   action [:create, :start]
 end
+# MySQL auto restart setting
+execute "set auto restart" do
+  # SysVinit is deprecated
+  # See: https://eng-entrance.com/linux_startup
+  # command "sudo sysv-rc-conf mysql-" + node[:lamp][:app_name] + " on"
+  command "sudo systemctl enable mysql-" + node[:lamp][:app_name] + ".service"
+end
+
 # build mysite.cnf for mysql config
 mysql_config node[:lamp][:app_name] do
   instance node[:lamp][:app_name]
