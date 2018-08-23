@@ -72,10 +72,10 @@ end
 #   action     :create
 # end
 execute "exec create user for app" do
-  command connection + '"' + "CREATE USER '#{node[:lamp][:db_user]}'@'localhost' IDENTIFIED BY '#{node[:lamp][:db_password]}'" + '"'
+  command connection + '"' + "CREATE USER IF NOT EXISTS '#{node[:lamp][:db_user]}'@'localhost' IDENTIFIED BY '#{node[:lamp][:db_password]}'" + '"'
 end
 execute "exec create user for test" do
-  command connection + '"' + "CREATE USER '#{node[:lamp][:testdb_user]}'@'localhost' IDENTIFIED BY '#{node[:lamp][:db_password]}'" + '"'
+  command connection + '"' + "CREATE USER IF NOT EXISTS '#{node[:lamp][:testdb_user]}'@'localhost' IDENTIFIED BY '#{node[:lamp][:db_password]}'" + '"'
 end
 
 # Let this database user access this database
