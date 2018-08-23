@@ -28,12 +28,12 @@ execute "restart_mysql" do
   command "sudo service mysql-" + node[:lamp][:app_name] + " restart"
 end
 
-
-# Since database cookbook(4.0.7) requires manual install for mysql2_chef_gem
-mysql2_chef_gem 'default' do
-  # client_version '5.7'
-  action :install
-end
+# database cookbook is now deprecated
+# # Since database cookbook(4.0.7) requires manual install for mysql2_chef_gem
+# mysql2_chef_gem 'default' do
+#   # client_version '5.7'
+#   action :install
+# end
 
 # This is used repeatedly, so we'll store it in a variable
 mysql_connection_info = {
@@ -42,43 +42,62 @@ mysql_connection_info = {
   password: node[:lamp][:db_password_root],
   socket:   '/var/run/mysql-' + node[:lamp][:app_name] + '/mysqld.sock'
 }
+connection = "mysql -h #{mysql_connection_info[:host]} -S #{mysql_connection_info[:socket]} -u #{mysql_connection_info[:username]} -p#{mysql_connection_info[:password]} -e "
 
 # Ensure a database exists with the name of our app
-mysql_database node[:lamp][:db_name] do
-  connection mysql_connection_info
-  action     :create
+# mysql_database node[:lamp][:db_name] do
+#   connection mysql_connection_info
+#   action     :create
+# end
+# mysql_database node[:lamp][:testdb_name] do
+#   connection mysql_connection_info
+#   action     :create
+# end
+execute "exec create database for app" do
+  command connection + '"' + "CREATE DATABASE IF NOT EXISTS #{node[:lamp][:db_name]}" + '"'
 end
-mysql_database node[:lamp][:testdb_name] do
-  connection mysql_connection_info
-  action     :create
+execute "exec create database for test" do
+  command connection + '"' + "CREATE DATABASE IF NOT EXISTS #{node[:lamp][:testdb_name]}" + '"'
 end
 
 # Ensure a database user exists with the name of our app
-mysql_database_user node[:lamp][:db_user] do
-  connection mysql_connection_info
-  password   node[:lamp][:db_password]
-  action     :create
+# mysql_database_user node[:lamp][:db_user] do
+#   connection mysql_connection_info
+#   password   node[:lamp][:db_password]
+#   action     :create
+# end
+# mysql_database_user node[:lamp][:testdb_user] do
+#   connection mysql_connection_info
+#   password   node[:lamp][:db_password]
+#   action     :create
+# end
+execute "exec create user for app" do
+  command connection + '"' + "CREATE USER '#{node[:lamp][:db_user]}'@'localhost' IDENTIFIED BY '#{node[:lamp][:db_password]}'" + '"'
 end
-mysql_database_user node[:lamp][:testdb_user] do
-  connection mysql_connection_info
-  password   node[:lamp][:db_password]
-  action     :create
+execute "exec create user for test" do
+  command connection + '"' + "CREATE USER '#{node[:lamp][:testdb_user]}'@'localhost' IDENTIFIED BY '#{node[:lamp][:db_password]}'" + '"'
 end
 
 # Let this database user access this database
-mysql_database_user node[:lamp][:db_user] do
-  mysql_connection_info
-  password      node[:lamp][:db_password]
-  database_name node[:lamp][:db_name]
-  host          'localhost'
-  action        :grant
+# mysql_database_user node[:lamp][:db_user] do
+#   mysql_connection_info
+#   password      node[:lamp][:db_password]
+#   database_name node[:lamp][:db_name]
+#   host          'localhost'
+#   action        :grant
+# end
+# mysql_database_user node[:lamp][:testdb_user] do
+#   mysql_connection_info
+#   password      node[:lamp][:db_password]
+#   database_name node[:lamp][:testdb_name]
+#   host          'localhost'
+#   action        :grant
+# end
+execute "grant privileges to user for app" do
+  command connection + '"' + "GRANT ALL PRIVILEGES ON #{node[:lamp][:db_name]}.* TO '#{node[:lamp][:db_user]}'@'localhost'" + '"'
 end
-mysql_database_user node[:lamp][:testdb_user] do
-  mysql_connection_info
-  password      node[:lamp][:db_password]
-  database_name node[:lamp][:testdb_name]
-  host          'localhost'
-  action        :grant
+execute "grant privileges to user for test" do
+  command connection + '"' + "GRANT ALL PRIVILEGES ON #{node[:lamp][:testdb_name]}.* TO '#{node[:lamp][:testdb_user]}'@'localhost'" + '"'
 end
 
 # MySQL timezone 設定
